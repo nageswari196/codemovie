@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CodeFlix - Paste Python or C code, watch it run</title>
+  <meta name="description" content="CodeFlix turns your Python or C code into a step-by-step movie: see variables change, the call stack grow, and every line run. Free for students.">
+  <meta name="theme-color" content="#5b5bf0">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%235b5bf0'/%3E%3Cpath d='M24 18l22 14-22 14z' fill='white'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+
+  <!-- ===== Google Analytics 4 =====
+       Put your Measurement ID in config.js (analyticsId). Until you do,
+       nothing is sent anywhere. -->
+  <script src="config.js"></script>
+  <script>
+    (function () {
+      var id = window.CODEFLIX_CONFIG && window.CODEFLIX_CONFIG.analyticsId;
+      if (!id || id === "G-XXXXXXXXXX") return;            // not configured -> analytics off
+      var s = document.createElement("script");
+      s.async = true; s.src = "https://www.googletagmanager.com/gtag/js?id=" + id;
+      document.head.appendChild(s);
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { dataLayer.push(arguments); };
+      gtag("js", new Date()); gtag("config", id);
+    })();
+  </script>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- =================== HEADER =================== -->
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#/" aria-label="CodeFlix home">
+      <!-- College logo slot: replace assets/college-logo.svg with your own (any png/svg). -->
+      <img class="college-logo" src="assets/college-logo.svg" alt="College logo" width="36" height="36">
+      <span class="brand-mark" aria-hidden="true">&#9654;</span>
+      <span class="brand-name">CodeFlix</span>
+    </a>
+
+    <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">&#9776;</button>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="#/" data-nav="home">Home</a>
+      <a href="#/app" data-nav="app">Try it</a>
+      <a href="#/examples" data-nav="examples">Examples</a>
+      <a href="#/my" data-nav="my">My Visualizations</a>
+      <button class="btn btn-ghost btn-sm" id="feedbackBtn" type="button">Feedback</button>
+      <span id="authArea">
+        <button class="btn btn-primary btn-sm" id="signInBtn" type="button">Sign in with Google</button>
+      </span>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- =================== PAGE 1: HOME =================== -->
+<section class="page" id="page-home" data-page="home">
+
+  <div class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-text">
+        <p class="eyebrow" id="collegeLine">For students of <span data-college-name>Your College Name</span></p>
+        <h1>Paste code <span class="arrow">&rarr;</span><br><span class="grad">Watch it run.</span></h1>
+        <p class="lead">CodeFlix plays your Python or C code like a movie. See every variable change, every function call and every line that runs &ndash; one step at a time.</p>
+        <div class="hero-cta">
+          <a class="btn btn-accent btn-lg" href="#/app">&#9654; Try it now</a>
+          <a class="btn btn-outline-light btn-lg" href="#/examples">Browse examples</a>
+        </div>
+        <ul class="hero-points">
+          <li>No install</li><li>Free to use</li><li>Works on your phone</li>
+        </ul>
+      </div>
+
+      <figure class="demo">
+        <div class="demo-frame">
+          <div class="demo-bar"><i></i><i></i><i></i><span>CodeFlix demo</span></div>
+          <!-- Demo GIF: replace assets/demo.gif with your own screen recording. -->
+          <img src="assets/demo.gif" alt="Animated demo: Python code running step by step with variables updating" width="900" height="536" loading="eager">
+        </div>
+      </figure>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <section class="steps3" aria-label="How it works">
+      <div class="card step3"><span class="num">1</span><h3>Paste</h3><p>Type or paste up to 30 lines of Python or C.</p></div>
+      <div class="card step3"><span class="num">2</span><h3>Run</h3><p>CodeFlix records every step your program takes.</p></div>
+      <div class="card step3"><span class="num">3</span><h3>Watch</h3><p>Play, pause or drag the timeline to any moment.</p></div>
+    </section>
+
+    <section id="examples" class="section">
+      <div class="section-head">
+        <h2>Examples gallery</h2>
+        <p>Click any card to load it and watch it run.</p>
+      </div>
+      <div class="tabs-wrap"><div class="lang-tabs" id="galleryTabs"><button type="button" data-lang="python" class="active">Python</button><button type="button" data-lang="c">C</button></div></div>
+      <div class="gallery" id="gallery"></div>
+    </section>
+
+    <section class="section features">
+      <div class="section-head"><h2>What you will see</h2></div>
+      <div class="feature-grid">
+        <div class="card feature"><h3><span class="f-ico" aria-hidden="true">&#128230;</span>Variable boxes</h3><p>Every variable is a box. Lists show each item with its index, and changed values flash.</p></div>
+        <div class="card feature"><h3><span class="f-ico" aria-hidden="true">&#128218;</span>Call stack</h3><p>Watch functions pile up and pop off &ndash; perfect for understanding recursion.</p></div>
+        <div class="card feature"><h3><span class="f-ico" aria-hidden="true">&#128161;</span>Plain-English narration</h3><p>Each step is explained in a sentence, and mistakes get friendly messages.</p></div>
+        <div class="card feature"><h3><span class="f-ico" aria-hidden="true">&#9201;</span>Timeline scrubber</h3><p>Drag back and forth to replay any moment of your program.</p></div>
+        <div class="card feature"><h3><span class="f-ico" aria-hidden="true">&#128190;</span>Save your work</h3><p>Sign in with Google to keep your visualizations. Not signed in? They are kept on this device.</p></div>
+        <div class="card feature"><h3><span class="f-ico" aria-hidden="true">&#127891;</span>Made for beginners</h3><p>Python and C basics &ndash; variables, loops, functions, arrays &ndash; done well.</p></div>
+      </div>
+    </section>
+  </div>
+</section>
+
+<!-- =================== PAGE 2: APP =================== -->
+<section class="page" id="page-app" data-page="app" hidden>
+  <div class="wrap">
+
+    <div class="toolbar card">
+      <label class="sr-only" for="titleInput">Title</label>
+      <input id="titleInput" class="title-input" type="text" maxlength="60" placeholder="Untitled visualization" autocomplete="off">
+      <div class="toolbar-actions">
+        <label class="sr-only" for="exampleSelect">Load an example</label>
+        <select id="langSelect" class="select" aria-label="Language"><option value="python">Python</option><option value="c">C</option></select>
+        <select id="exampleSelect" class="select"><option value="">Load example&hellip;</option></select>
+        <button class="btn btn-ghost" id="clearBtn" type="button">New</button>
+        <button class="btn btn-ghost" id="saveBtn" type="button">&#128190; Save</button>
+        <button class="btn btn-accent" id="runBtn" type="button">&#9654; Run</button>
+      </div>
+    </div>
+
+    <div class="app-grid">
+
+      <!-- Editor (a textarea with line numbers + a highlight bar) -->
+      <section class="card panel area-code" aria-label="Code editor">
+        <div class="panel-head">
+          <h2 id="codeTitle">Your Python code</h2>
+          <span class="chip" id="lineCounter">0 / 30 lines</span>
+        </div>
+        <div class="editor" id="editor">
+          <div class="gutter" aria-hidden="true"><div id="gutterInner"></div></div>
+          <div class="code-wrap" id="codeWrap">
+            <div class="bar bar-run" id="runBar" hidden></div>
+            <div class="bar bar-err" id="errBar" hidden></div>
+            <!-- coloured copy of the code; sits under the (invisible-text) textarea -->
+            <pre class="hl-layer" id="hlLayer" aria-hidden="true"></pre>
+            <textarea id="code" spellcheck="false" wrap="off" autocomplete="off" autocorrect="off" autocapitalize="off"
+                      aria-label="Python code" placeholder="# Paste or type Python here (max 30 lines)&#10;total = 0&#10;for n in [1, 2, 3]:&#10;    total = total + n&#10;print(total)"></textarea>
+          </div>
+        </div>
+        <p class="hint" id="staleHint" hidden>You changed the code &ndash; press <b>Run</b> to see the new movie.</p>
+      </section>
+
+      <!-- Live visualizer: a picture of the current step + a running trace log -->
+      <section class="card panel area-viz" aria-label="Live visualizer">
+        <div class="panel-head">
+          <h2><span class="live-dot" id="liveDot" aria-hidden="true"></span>Live visualizer</h2>
+          <div class="head-chips">
+            <span class="chip chip-status" id="vizStatus">Idle</span>
+            <span class="chip chip-kind" id="traceKind">Ready</span>
+          </div>
+        </div>
+
+        <div class="viz-stage" id="vizStage" aria-live="polite"></div>
+
+        <div class="viz-stats" id="vizStats" aria-label="Run statistics"></div>
+
+        <div class="console" id="traceConsole">
+          <div class="console-bar">
+            <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="console-title">execution-trace.log</span>
+            <button class="console-btn" id="traceCopy" type="button" title="Copy the trace text">Copy</button>
+          </div>
+          <div class="console-body" id="traceLog" role="log" aria-label="Execution trace log"></div>
+        </div>
+      </section>
+
+      <section class="card panel area-vars" aria-label="Variables">
+        <div class="panel-head"><h2>Variables</h2><span class="chip" id="scopeChip">main</span></div>
+        <div id="vars" class="vars"></div>
+      </section>
+
+      <section class="card panel area-stack" aria-label="Call stack">
+        <div class="panel-head"><h2>Call stack</h2></div>
+        <div id="stack" class="stack"></div>
+      </section>
+
+      <section class="card panel area-out" aria-label="Output">
+        <div class="panel-head"><h2>Output</h2></div>
+        <pre id="output" class="output"></pre>
+      </section>
+
+      <!-- Player: narration bar + controls + timeline scrubber -->
+      <section class="card player area-player" aria-label="Playback">
+        <div class="narration" id="narration" role="status" aria-live="polite">
+          <span>Press <b>Run</b> to start the movie.</span>
+        </div>
+        <div class="controls">
+          <button class="icon-btn" id="firstBtn" type="button" title="Back to start" aria-label="Back to start">&#9198;</button>
+          <button class="icon-btn" id="prevBtn" type="button" title="Previous step (left arrow)" aria-label="Previous step">&#9664;</button>
+          <button class="icon-btn play" id="playBtn" type="button" title="Play / pause (space)" aria-label="Play">&#9654;</button>
+          <button class="icon-btn" id="nextBtn" type="button" title="Next step (right arrow)" aria-label="Next step">&#9654;&#9654;</button>
+          <label class="speed">Speed
+            <select id="speedSelect" class="select select-sm">
+              <option value="0.5">0.5x</option><option value="1" selected>1x</option><option value="2">2x</option><option value="4">4x</option>
+            </select>
+          </label>
+          <span class="step-count" id="stepCount">Step 0 / 0</span>
+        </div>
+        <input type="range" id="scrubber" class="scrubber" min="0" max="0" value="0" step="1" aria-label="Timeline" disabled>
+        <p class="hint" id="limitNote" hidden></p>
+      </section>
+
+    </div>
+  </div>
+</section>
+
+<!-- =================== PAGE 3: MY VISUALIZATIONS =================== -->
+<section class="page" id="page-my" data-page="my" hidden>
+  <div class="wrap">
+    <div class="section-head left">
+      <h2>My Visualizations</h2>
+      <p id="myWhere">Your saved code appears here.</p>
+    </div>
+    <div id="myBanner"></div>
+    <div id="myList" class="my-list"></div>
+  </div>
+</section>
+
+<!-- =================== PAGE 4: PROFILE =================== -->
+<section class="page" id="page-profile" data-page="profile" hidden>
+  <div class="wrap narrow">
+    <div class="section-head left"><h2>My Profile</h2><p>Tell CodeFlix a little about you. Only you can see this.</p></div>
+    <div id="profileBody"></div>
+  </div>
+</section>
+
+</main>
+
+<!-- =================== FOOTER =================== -->
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div>
+      <strong>CodeFlix</strong> &middot; <span data-college-name>Your College Name</span>
+      <div class="muted small">Python: numbers, strings, lists, if, for, while, def, return, print. &middot; C: int/float/char, arrays, if, for, while, functions, printf.</div>
+    </div>
+    <button class="btn btn-ghost btn-sm" type="button" data-open-feedback>Send feedback</button>
+  </div>
+</footer>
+
+<!-- =================== FEEDBACK DIALOG =================== -->
+<dialog id="feedbackDialog" class="dialog">
+  <form method="dialog" id="feedbackForm">
+    <h3>Send feedback</h3>
+    <p class="muted small">This opens your email app with a message to the CodeFlix admin.</p>
+    <label for="fbType">What is it about?</label>
+    <select id="fbType" class="select">
+      <option>Something is broken</option><option>I have an idea</option><option>I have a question</option><option>Just saying thanks</option>
+    </select>
+    <label for="fbMsg">Your message</label>
+    <textarea id="fbMsg" rows="5" maxlength="1000" placeholder="Tell us what happened..."></textarea>
+    <label class="check"><input type="checkbox" id="fbCode" checked> Include the code that is in my editor</label>
+    <div class="dialog-actions">
+      <button class="btn btn-ghost" type="button" id="fbCancel">Cancel</button>
+      <button class="btn btn-primary" type="button" id="fbSend">Open email</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<!-- Scripts. Order matters: config -> cloud -> tracer -> examples -> app -->
+<script type="module" src="cloud.js"></script>
+<script src="tracer.js"></script>
+<script src="ctracer.js"></script>
+<script src="examples.js"></script>
+<script src="examples-c.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

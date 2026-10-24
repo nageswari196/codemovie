@@ -1,0 +1,32 @@
+# Netlify settings for CodeFlix. There is nothing to build - it is plain HTML/CSS/JS.
+[build]
+  publish = "."
+
+# Small, safe security headers.
+# (Do NOT add a "Cross-Origin-Opener-Policy: same-origin" header - it breaks the Google sign-in popup.)
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
+
+# Let the browser re-check HTML/JS/CSS quickly so students always get your latest edits.
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=300, must-revalidate"
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=300, must-revalidate"
+
+# Keep helper files out of the live site (they still stay in your folder).
+[[redirects]]
+  from = "/SETUP-GUIDE.md"
+  to = "/"
+  status = 302
+[[redirects]]
+  from = "/test-examples.js"
+  to = "/"
+  status = 302

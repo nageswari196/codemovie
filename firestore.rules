@@ -1,0 +1,31 @@
+// Paste this into: Firebase console -> Firestore Database -> Rules -> Publish
+// Each student can read / write ONLY their own saved items.
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /users/{uid}/visualizations/{vizId} {
+      allow read, delete: if request.auth != null && request.auth.uid == uid;
+
+      allow create, update: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.title is string && request.resource.data.title.size() <= 100
+        && request.resource.data.code  is string && request.resource.data.code.size()  <= 5000;
+    }
+
+    match /users/{uid}/profile/{docId} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow create, update: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['displayName', 'college', 'department', 'year', 'rollNo', 'updatedAt'])
+        && request.resource.data.displayName is string && request.resource.data.displayName.size() <= 60
+        && request.resource.data.college is string && request.resource.data.college.size() <= 100
+        && request.resource.data.department is string && request.resource.data.department.size() <= 60
+        && request.resource.data.year is string && request.resource.data.year.size() <= 20
+        && request.resource.data.rollNo is string && request.resource.data.rollNo.size() <= 30;
+    }
+
+    // everything else is closed
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
